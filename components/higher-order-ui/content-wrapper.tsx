@@ -8,29 +8,23 @@ export const ContentWrapper = ({ children }: ContentWrapperProps) => {
   return (
     <article
       className="
-          p-8
-          pb-10
+          px-6
+          pt-7
+          pb-8
           md:py-4
           md:px-14
           md:flex
           md:flex-col
           md:justify-between
+          md:w-[30rem]
         "
     >
-      <main
-        className="
-          flex
-          flex-col
-          gap-3
-          "
-      >
-        {children}
-      </main>
+      {children}
       <Footer
         className="
             hidden
             md:flex
-            md:py-0 md:px-0 "
+            md:py-0 md:px-0"
       />
     </article>
   );

@@ -12,11 +12,24 @@ export const Footer = ({ className }: FooterProps) => {
     <footer
       className={`
         flex
-        justify-end
+        justify-between
+        items-center
         bg-white
-        p-4
+        px-4
+        py-4
         ${className}`}
     >
+      <button
+        className="
+          text-neutral-cool-gray
+          px-4
+          rounded-[.300rem]
+          duration-100
+          hover:text-primary-marine-blue
+        "
+      >
+        Go Back
+      </button>
       <button
         className="
           text-neutral-white

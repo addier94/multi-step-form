@@ -3,6 +3,10 @@ import { AsideWrapper } from "@/components/higher-order-ui/aside-wrapper";
 import { ContentWrapper } from "@/components/higher-order-ui/content-wrapper";
 import { stepForms } from "@/data";
 import { useState } from "react";
+import { SelectPlan } from "./select-plan";
+import { PickAddOns } from "./pick-add-ons";
+import { FinishingUp } from "./finishing-up";
+import { ThankYou } from "./thank-you";
 
 interface BodyContentProps {
   className?: string;
@@ -87,6 +91,10 @@ export const BodyContent = ({ className }: BodyContentProps) => {
 
       <ContentWrapper>
         <PersonalInfo />
+        {/* <SelectPlan /> */}
+        {/* <PickAddOns /> */}
+        {/* <FinishingUp /> */}
+        {/* <ThankYou /> */}
       </ContentWrapper>
     </article>
   );

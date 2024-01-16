@@ -34,7 +34,6 @@ export default function Home() {
           />
           <Footer
             className="
-            h-20
             self-end
             col-span-12
             md:hidden
