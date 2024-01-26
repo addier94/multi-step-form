@@ -1,46 +1,51 @@
-import { useState } from "react";
+import {
+  TPickAddOns,
+  useFormActions,
+  useFormData,
+} from "@/context/form-data-context";
+import { Helper } from "@/helpers";
+import { useEffect } from "react";
 
-interface PickAddOnsType {
-  name: string;
-  description: string;
-  price: string;
-  checked: boolean;
-}
-const pickAddOns: PickAddOnsType[] = [
-  {
-    name: "Online service",
-    description: "Access to multiplayer games",
-    price: "1",
-    checked: true,
-  },
-  {
-    name: "Larger storage",
-    description: "Extra 1TB of cloud save",
-    price: "2",
-    checked: true,
-  },
-  {
-    name: "Customizable profile",
-    description: "Custom there on your profile",
-    price: "2",
-    checked: false,
-  },
-];
 export const PickAddOns = () => {
-  const [pickAddOnsData, setPickAddOnsData] =
-    useState<PickAddOnsType[]>(pickAddOns);
+  const {
+    formData: { pickAddOns, plans },
+  } = useFormData();
+
+  const { setPickAddOns } = useFormActions();
 
   const toggleChecked = (name: string) => {
-    setPickAddOnsData((prev) =>
-      prev.map((addOn) =>
-        addOn.name === name ? { ...addOn, checked: !addOn.checked } : addOn
-      )
-    );
+    const modifiedOns = pickAddOns.map((addon, index) => {
+      const priceMonOrYr = plans.isMonthly ? 1 : 10;
+      const priceMonOrYrForCustom = plans.isMonthly ? 2 : 20;
+
+      let price = 0;
+      // Check if the current add-on is the last one in the array
+      if (pickAddOns.length - 1 === index) {
+        price = priceMonOrYrForCustom;
+      } else {
+        price = priceMonOrYr;
+      }
+
+      return addon.name !== name
+        ? addon
+        : {
+            ...addon,
+            checked: !addon.checked,
+            price: !addon.checked ? price : 0,
+          };
+    });
+    setPickAddOns(modifiedOns);
   };
 
   const handleCheckboxChange = (name: string) => {
     toggleChecked(name);
   };
+
+  useEffect(() => {
+    const updatedAddOns = Helper.updateAddOns(plans.isMonthly, pickAddOns);
+
+    setPickAddOns(updatedAddOns);
+  }, []);
 
   return (
     <main
@@ -64,7 +69,7 @@ export const PickAddOns = () => {
         space-y-3
       "
       >
-        {pickAddOnsData.map((addOn) => (
+        {pickAddOns.map((addOn) => (
           <label
             key={addOn.name}
             className={`
@@ -112,7 +117,9 @@ export const PickAddOns = () => {
                 </p>
               </div>
             </div>
-            <span className="text-primary-purplish-blue text-xs">+$1/mo</span>
+            <span className="text-primary-purplish-blue text-xs">
+              +${addOn.price}/{addOn.period}
+            </span>
           </label>
         ))}
       </article>

@@ -1,35 +1,38 @@
+import {
+  TSelectedPlan,
+  useFormActions,
+  useFormData,
+} from "@/context/form-data-context";
+import { Helper } from "@/helpers";
 import Image from "next/image";
-import { useState } from "react";
-
-interface SelectPlanOptionsType {
-  name: string;
-  icon: string;
-  price: string;
-  isActive: boolean;
-}
-const selectPlanOptions: SelectPlanOptionsType[] = [
-  {
-    name: "Arcade",
-    icon: "/assets/images/icon-arcade.svg",
-    price: "$9/mo",
-    isActive: true,
-  },
-  {
-    name: "Advanced",
-    icon: "/assets/images/icon-advanced.svg",
-    price: "$12/mo",
-    isActive: false,
-  },
-  {
-    name: "Pro",
-    icon: "/assets/images/icon-pro.svg",
-    price: "$15/mo",
-    isActive: false,
-  },
-];
+import { useEffect } from "react";
 
 export const SelectPlan = () => {
-  const [isMonthly, setIsMonthly] = useState(true);
+  const {
+    formData: { plans, plansAvailable },
+  } = useFormData();
+
+  const { setPlans, setPlansAvailable } = useFormActions();
+
+  const changePlan = (selected: TSelectedPlan) => {
+    const changed = Helper.changePlan(selected, plansAvailable);
+
+    if (!changed) return;
+
+    setPlansAvailable(changed.newArray);
+    setPlans({ ...plans, selectedPlan: changed.updatedSelectedPlan });
+  };
+
+  useEffect(() => {
+    const newPlan = Helper.changePlanToMonthlyOrYearly(
+      plans.isMonthly,
+      plansAvailable
+    );
+    setPlansAvailable(newPlan);
+
+    setPlans({ ...plans, selectedPlan: Helper.getCurrentPlan(newPlan) });
+  }, [plans.isMonthly]);
+
   return (
     <main
       className="
@@ -55,12 +58,13 @@ export const SelectPlan = () => {
         md:mt-6
       "
       >
-        {selectPlanOptions.map((option) => (
+        {plansAvailable.map((option) => (
           <section
             key={option.name}
+            onClick={() => changePlan(option)}
             className={`
               flex
-              items-center
+              items-start
               md:flex-1
               md:flex-col
               md:items-start
@@ -77,7 +81,7 @@ export const SelectPlan = () => {
               duration-150
               hover:border-primary-marine-blue
               ${
-                option.isActive
+                option.planSelected
                   ? "border-primary-marine-blue bg-neutral-alabaster"
                   : ""
               }
@@ -113,8 +117,13 @@ export const SelectPlan = () => {
                       text-neutral-cool-gray
                 `}
               >
-                {option.price}
+                ${option.price}/{option.period}
               </p>
+              {option.period === "yr" && (
+                <p className="text-xs text-primary-marine-blue">
+                  2 months free
+                </p>
+              )}
             </div>
           </section>
         ))}
@@ -133,7 +142,9 @@ export const SelectPlan = () => {
           text-sm
         "
       >
-        <span className={`${isMonthly ? "text-primary-marine-blue" : ""}`}>
+        <span
+          className={`${plans.isMonthly ? "text-primary-marine-blue" : ""}`}
+        >
           Monthly
         </span>
         <span
@@ -153,12 +164,14 @@ export const SelectPlan = () => {
             name="myRange"
             min="0"
             max="1"
-            value={isMonthly ? 0 : 1}
-            onClick={() => setIsMonthly(!isMonthly)}
+            value={plans.isMonthly ? 0 : 1}
+            onChange={() => setPlans({ ...plans, isMonthly: !plans.isMonthly })}
             className="custom-range w-8 bg-primary-marine-blue appearance-none rounded-md"
           />
         </span>
-        <span className={`${isMonthly ? "" : "text-primary-marine-blue"}`}>
+        <span
+          className={`${plans.isMonthly ? "" : "text-primary-marine-blue"}`}
+        >
           Yearly
         </span>
       </footer>

@@ -1,10 +1,11 @@
 "use client";
 
 import BgScreen from "../../components/higher-order-ui/bg-screen";
-import { FormDataProvider } from "@/context/form-data-context";
+import { FormDataProvider, useFormData } from "@/context/form-data-context";
 import { MobileHeader } from "@/components/MobileHeader";
 import { BodyContent } from "./_components/body-content";
 import { Footer } from "@/components/footer";
+import { Helper } from "@/helpers";
 
 export default function Home() {
   return (
@@ -35,6 +36,7 @@ export default function Home() {
           <Footer
             className="
             self-end
+            grid
             col-span-12
             md:hidden
           "

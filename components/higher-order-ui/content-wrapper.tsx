@@ -23,7 +23,7 @@ export const ContentWrapper = ({ children }: ContentWrapperProps) => {
       <Footer
         className="
             hidden
-            md:flex
+            md:grid
             md:py-0 md:px-0"
       />
     </article>

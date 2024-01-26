@@ -1,19 +1,23 @@
 import { PersonalInfo } from "./personal-info";
 import { AsideWrapper } from "@/components/higher-order-ui/aside-wrapper";
 import { ContentWrapper } from "@/components/higher-order-ui/content-wrapper";
-import { stepForms } from "@/data";
-import { useState } from "react";
 import { SelectPlan } from "./select-plan";
 import { PickAddOns } from "./pick-add-ons";
 import { FinishingUp } from "./finishing-up";
 import { ThankYou } from "./thank-you";
+import { useFormData } from "@/context/form-data-context";
+import { Aside } from "@/components/aside";
+import { Helper } from "@/helpers";
 
 interface BodyContentProps {
   className?: string;
 }
 
 export const BodyContent = ({ className }: BodyContentProps) => {
-  const [activeForm, setActiveForm] = useState(false);
+  const { formData } = useFormData();
+
+  const activeStep = Helper.findIfAPropertyHasTrue(formData.stepsForm);
+
   return (
     <article
       className={`
@@ -31,70 +35,16 @@ export const BodyContent = ({ className }: BodyContentProps) => {
         ${className}`}
     >
       <AsideWrapper>
-        <section
-          className="
-            flex
-            flex-col
-            gap-5
-            text-neutral-white
-          "
-        >
-          {stepForms.map((stepForm) => (
-            <article
-              key={stepForm.id}
-              className="
-                flex
-                items-center
-                gap-3
-              "
-            >
-              <div
-                className={`
-                  w-7
-                  h-7
-                  flex
-                  items-center
-                  justify-center
-                  rounded-full
-                  border-[1px]
-                  ${activeForm ? "text-black bg-primary-light-blue" : ""}
-                  `}
-              >
-                {stepForm.id}
-              </div>
-              <div
-                className="
-                  text-xs
-                  font-medium
-                "
-              >
-                <h3
-                  className="
-                  text-primary-pastel-blue 
-                  font-medium
-                "
-                >
-                  STEP {stepForm.id}
-                </h3>
-                <p
-                  className="
-                  text-sm
-                "
-                >
-                  {stepForm.title}
-                </p>
-              </div>
-            </article>
-          ))}
-        </section>
+        {/* showed just in desktop screen*/}
+        <Aside />
       </AsideWrapper>
 
       <ContentWrapper>
-        <PersonalInfo />
-        {/* <SelectPlan /> */}
-        {/* <PickAddOns /> */}
-        {/* <FinishingUp /> */}
-        {/* <ThankYou /> */}
+        {activeStep.id === 1 && <PersonalInfo />}
+        {activeStep.id === 2 && <SelectPlan />}
+        {activeStep.id === 3 && <PickAddOns />}
+        {activeStep.id === 4 && !activeStep.guard && <FinishingUp />}
+        {activeStep.id === 4 && activeStep.guard && <ThankYou />}
       </ContentWrapper>
     </article>
   );

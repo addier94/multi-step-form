@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useFormData } from "@/context/form-data-context";
 
 interface MobileHeaderProps {
   className?: string;
 }
 
 export const MobileHeader = ({ className }: MobileHeaderProps) => {
-  const [isActiveForm, setIsActiveForm] = useState<boolean>(true);
+  const {
+    formData: { stepsForm },
+  } = useFormData();
 
   return (
     <header
@@ -25,59 +27,25 @@ export const MobileHeader = ({ className }: MobileHeaderProps) => {
         p-8 
         gap-5`}
       >
-        <li
-          className={`
-            w-9
-            h-9
-            flex
-            items-center
-            justify-center
-            rounded-full
-            border-[1px]
-            ${isActiveForm ? "bg-primary-light-blue text-black" : ""}
-          `}
-        >
-          1
-        </li>
-        <li
-          className="
-            w-9
-            h-9
-            flex
-            items-center
-            justify-center
-            rounded-full
-            border-[1px]
-          "
-        >
-          2
-        </li>
-        <li
-          className="
-            w-9
-            h-9
-            flex
-            items-center
-            justify-center
-            rounded-full
-            border-[1px]
-          "
-        >
-          3
-        </li>
-        <li
-          className="
-            w-9
-            h-9
-            flex
-            items-center
-            justify-center
-            rounded-full
-            border-[1px]
-          "
-        >
-          4
-        </li>
+        {stepsForm.map((stepForm) => (
+          <li
+            key={stepForm.id}
+            className={`
+              w-9
+              h-9
+              flex
+              items-center
+              justify-center
+              rounded-full
+              border-[1px]
+              ${
+                stepForm.isCurrentStep ? "bg-primary-light-blue text-black" : ""
+              }
+            `}
+          >
+            {stepForm.id}
+          </li>
+        ))}
       </ul>
     </header>
   );
